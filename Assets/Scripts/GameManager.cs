@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
         Destroy(tempMonster);
 
         // Start waves only after a map has been selected and loaded
-        // StartCoroutine(StartWaves());
+        StartGameWithMap(0); // Example: automatically start with the first map for testing
     }
 
     // How to integrate UI for map selection and game start:
@@ -163,6 +163,7 @@ public class GameManager : MonoBehaviour
             Debug.LogError("Monster Prefab is not assigned in GameManager!");
             return;
         }
+        Debug.Log($"Attempting to generate monster at {_mapManager.MonsterStartPoint}");
 
         // Instantiate monster from prefab
         GameObject newMonsterGO = Instantiate(monsterPrefab, _mapManager.MonsterStartPoint, Quaternion.identity);

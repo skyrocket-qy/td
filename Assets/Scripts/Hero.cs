@@ -168,14 +168,10 @@ public class Hero : MonoBehaviour
             skillCooldowns[skill] -= Time.deltaTime;
         }
 
-        // Example: Press 'Space' to attack
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Attack();
-        }
+        Attack();
 
         // Example: Press '1' to use the first skill (if available)
-        if (Input.GetKeyDown(KeyCode.Alpha1) && heroSkills.Count > 0)
+        if (heroSkills.Count > 0)
         {
             UseSkill(heroSkills[0]);
         }
