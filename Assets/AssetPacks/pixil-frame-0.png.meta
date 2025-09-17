@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 1e004406d60741147987051474067fef
+guid: e06e71675c3f943f1b914f56d6a16024
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4263702999252029208
-    second: 32rogues-palette_0
+      213: -3337038689812066966
+    second: pixil-frame-0_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 32rogues-palette_0
+      name: pixil-frame-0_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 16
-        height: 4
+        height: 16
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 8e0b0d556b844d4c0800000000000000
-      internalID: -4263702999252029208
+      spriteID: a6d4404fdf470b1d0800000000000000
+      internalID: -3337038689812066966
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      32rogues-palette_0: -4263702999252029208
+      pixil-frame-0_0: -3337038689812066966
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

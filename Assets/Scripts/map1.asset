@@ -16,5 +16,9 @@ MonoBehaviour:
   monsterStartPoint: {x: -5, y: 0, z: 0}
   monsterEndPoint: {x: 5, y: 0, z: 0}
   barrierPositions: []
+  pathPositions: []
   heroPlacementSpots: []
   heroLimit: 3
+  mapSpecificBarrierPrefab: {fileID: 0}
+  mapSpecificPlacementSpotPrefab: {fileID: 0}
+  mapSpecificPathPrefab: {fileID: 7086509010406471491, guid: f4bb05e7e9d064935876adc0ca6c2bb1, type: 3}
