@@ -10,6 +10,15 @@ bk:
 run:
 	go run ./cmd/game
 
+run-snake:
+	go run ./examples/snake
+
+run-pong:
+	go run ./examples/pong
+
+run-breakout:
+	go run ./examples/breakout
+
 test:
 	go test ./...
 
