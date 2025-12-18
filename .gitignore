@@ -1,0 +1,44 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+game
+slots
+
+# Build outputs
+dist/
+
+# Test binary
+*.test
+
+# Go workspace
+go.work
+go.work.sum
+
+# Coverage
+*.out
+coverage.html
+
+# IDE / Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Debug
+__debug_bin*
+
+# Vendor (uncomment if not vendoring)
+# vendor/
+
+# Generated files
+*.wasm
+
+# Local environment
+.env
+.env.local

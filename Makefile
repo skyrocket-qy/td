@@ -22,6 +22,45 @@ run-breakout:
 run-slots:
 	go run ./examples/slots
 
+run-flappy:
+	go run ./examples/flappy
+
+run-2048:
+	go run ./examples/puzzle_2048
+
+run-minesweeper:
+	go run ./examples/minesweeper
+
+run-cookie:
+	go run ./examples/cookie_clicker
+
+run-shooter:
+	go run ./examples/space_shooter
+
+run-platformer:
+	go run ./examples/platformer
+
+run-match3:
+	go run ./examples/match3
+
+run-blackjack:
+	go run ./examples/blackjack
+
+run-agar:
+	go run ./examples/agar
+
+run-rts:
+	go run ./examples/mini_rts
+
+run-rpg:
+	go run ./examples/rpg_battle
+
+run-roguelike:
+	go run ./examples/roguelike
+
+run-survivor:
+	go run ./examples/survivor
+
 test:
 	go test ./...
 
