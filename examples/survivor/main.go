@@ -5,6 +5,7 @@ import (
 	"embed"
 	"image"
 	"image/color"
+	_ "image/jpeg"
 	_ "image/png"
 	"log"
 	"math"
@@ -105,25 +106,26 @@ const (
 
 // Monster definition.
 type MonsterDef struct {
-	Name   string
-	HP     int
-	Speed  float64
-	Damage int
-	XP     int
-	Radius float64
-	Color  color.RGBA
-	IsBoss bool
+	Name      string
+	HP        int
+	Speed     float64
+	Damage    int
+	XP        int
+	Radius    float64
+	Color     color.RGBA
+	IsBoss    bool
+	ImageFile string
 }
 
 var MonsterDefs = map[MonsterType]MonsterDef{
-	MonsterBat:        {Name: "Bat", HP: 15, Speed: 4.0, Damage: 3, XP: 3, Radius: 10, Color: color.RGBA{R: 80, G: 60, B: 80, A: 255}},
-	MonsterSkeleton:   {Name: "Skeleton", HP: 30, Speed: 1.5, Damage: 8, XP: 8, Radius: 14, Color: color.RGBA{R: 200, G: 200, B: 180, A: 255}},
-	MonsterZombie:     {Name: "Zombie", HP: 60, Speed: 1.0, Damage: 12, XP: 12, Radius: 16, Color: color.RGBA{R: 100, G: 150, B: 100, A: 255}},
-	MonsterGhost:      {Name: "Ghost", HP: 20, Speed: 2.5, Damage: 6, XP: 10, Radius: 12, Color: color.RGBA{R: 200, G: 200, B: 255, A: 180}},
-	MonsterDemon:      {Name: "Demon", HP: 100, Speed: 2.0, Damage: 15, XP: 20, Radius: 18, Color: color.RGBA{R: 200, G: 50, B: 50, A: 255}},
-	MonsterElemental:  {Name: "Elemental", HP: 50, Speed: 2.5, Damage: 10, XP: 15, Radius: 14, Color: color.RGBA{R: 100, G: 200, B: 255, A: 255}},
-	MonsterBossKnight: {Name: "Death Knight", HP: 500, Speed: 1.5, Damage: 25, XP: 200, Radius: 35, Color: color.RGBA{R: 50, G: 50, B: 80, A: 255}, IsBoss: true},
-	MonsterBossDragon: {Name: "Dragon", HP: 800, Speed: 2.0, Damage: 30, XP: 400, Radius: 45, Color: color.RGBA{R: 150, G: 50, B: 50, A: 255}, IsBoss: true},
+	MonsterBat:        {Name: "Bat", HP: 15, Speed: 4.0, Damage: 3, XP: 3, Radius: 10, Color: color.RGBA{R: 80, G: 60, B: 80, A: 255}, ImageFile: "assets/monster_bat.png"},
+	MonsterSkeleton:   {Name: "Skeleton", HP: 30, Speed: 1.5, Damage: 8, XP: 8, Radius: 14, Color: color.RGBA{R: 200, G: 200, B: 180, A: 255}, ImageFile: "assets/monster_skeleton.png"},
+	MonsterZombie:     {Name: "Zombie", HP: 60, Speed: 1.0, Damage: 12, XP: 12, Radius: 16, Color: color.RGBA{R: 100, G: 150, B: 100, A: 255}, ImageFile: "assets/monster_zombie.png"},
+	MonsterGhost:      {Name: "Ghost", HP: 20, Speed: 2.5, Damage: 6, XP: 10, Radius: 12, Color: color.RGBA{R: 200, G: 200, B: 255, A: 180}, ImageFile: "assets/monster_ghost.png"},
+	MonsterDemon:      {Name: "Demon", HP: 100, Speed: 2.0, Damage: 15, XP: 20, Radius: 18, Color: color.RGBA{R: 200, G: 50, B: 50, A: 255}, ImageFile: "assets/monster_ghost.png"},                         // Reuse ghost for now
+	MonsterElemental:  {Name: "Elemental", HP: 50, Speed: 2.5, Damage: 10, XP: 15, Radius: 14, Color: color.RGBA{R: 100, G: 200, B: 255, A: 255}, ImageFile: "assets/monster_ghost.png"},                    // Reuse ghost
+	MonsterBossKnight: {Name: "Death Knight", HP: 500, Speed: 1.5, Damage: 25, XP: 200, Radius: 35, Color: color.RGBA{R: 50, G: 50, B: 80, A: 255}, IsBoss: true, ImageFile: "assets/monster_skeleton.png"}, // Reuse skeleton
+	MonsterBossDragon: {Name: "Dragon", HP: 800, Speed: 2.0, Damage: 30, XP: 400, Radius: 45, Color: color.RGBA{R: 150, G: 50, B: 50, A: 255}, IsBoss: true, ImageFile: "assets/monster_bat.png"},           // Reuse bat
 }
 
 // Passive upgrade types.
@@ -257,6 +259,9 @@ type Game struct {
 	xpGems        []*XPGem
 	damageNumbers []*DamageNumber
 	charImages    []*ebiten.Image
+	monsterImages map[MonsterType]*ebiten.Image
+	weaponImages  map[WeaponType]*ebiten.Image
+	passiveImages map[PassiveType]*ebiten.Image
 
 	gameTime     float64
 	spawnTimer   float64
@@ -283,9 +288,10 @@ type UpgradeOption struct {
 func NewGame() *Game {
 	rand.Seed(time.Now().UnixNano())
 	g := &Game{
-		state:        StateCharSelect,
-		selectedChar: 0,
-		charImages:   make([]*ebiten.Image, len(Characters)),
+		state:         StateCharSelect,
+		selectedChar:  0,
+		charImages:    make([]*ebiten.Image, len(Characters)),
+		monsterImages: make(map[MonsterType]*ebiten.Image),
 	}
 
 	// Load character images
@@ -303,6 +309,25 @@ func NewGame() *Game {
 		g.charImages[i] = ebiten.NewImageFromImage(img)
 	}
 
+	// Load monster images
+	for t, def := range MonsterDefs {
+		if def.ImageFile == "" {
+			continue
+		}
+		data, err := assetsFS.ReadFile(def.ImageFile)
+		if err != nil {
+			log.Printf("Warning: could not load %s: %v", def.ImageFile, err)
+			continue
+		}
+		img, _, err := image.Decode(bytes.NewReader(data))
+		if err != nil {
+			log.Printf("Warning: could not decode %s: %v", def.ImageFile, err)
+			continue
+		}
+		g.monsterImages[t] = ebiten.NewImageFromImage(img)
+	}
+
+	g.generateIcons()
 	return g
 }
 
@@ -560,9 +585,24 @@ func (g *Game) fireWeapon(w *Weapon) {
 
 	switch w.Type {
 	case WeaponSword:
-		// Arc in front (based on last movement or random)
+		// Aim at nearest enemy
+		target := g.findNearestEnemy(120) // Melee range
+		baseAngle := 0.0
+		if target != nil {
+			baseAngle = math.Atan2(target.Y-g.player.Y, target.X-g.player.X)
+		} else {
+			// If no target, aim random or straight? Random arc is okay fallback
+			baseAngle = (rand.Float64() - 0.5) * math.Pi / 2
+		}
+
 		for i := 0; i < count; i++ {
-			angle := rand.Float64()*math.Pi - math.Pi/2
+			// Spread around base angle
+			angle := baseAngle
+			if count > 1 {
+				spread := math.Pi / 3 // 60 degrees spread
+				angle += spread * (float64(i)/float64(count-1) - 0.5)
+			}
+
 			g.projectiles = append(g.projectiles, &Projectile{
 				X:  g.player.X + math.Cos(angle)*40,
 				Y:  g.player.Y + math.Sin(angle)*40,
@@ -699,19 +739,42 @@ func (g *Game) findNearestEnemy(maxDist float64) *Enemy {
 }
 
 func (g *Game) findNearestEnemies(count int, maxDist float64) []*Enemy {
-	result := make([]*Enemy, 0)
+	type candidate struct {
+		e    *Enemy
+		dist float64
+	}
+	candidates := make([]candidate, 0)
+
 	for _, e := range g.enemies {
 		if e.Dead {
 			continue
 		}
 		dist := math.Sqrt(math.Pow(g.player.X-e.X, 2) + math.Pow(g.player.Y-e.Y, 2))
 		if dist < maxDist {
-			result = append(result, e)
-			if len(result) >= count {
-				break
-			}
+			candidates = append(candidates, candidate{e, dist})
 		}
 	}
+
+	// Sort by distance (simple bubble sort or similar since count is small, or just slice sort)
+	// Since list might be long, finding top N is O(N*M).
+	// Let's just find top count.
+
+	result := make([]*Enemy, 0)
+	for i := 0; i < count && len(candidates) > 0; i++ {
+		bestIdx := 0
+		minDist := candidates[0].dist
+		for j := 1; j < len(candidates); j++ {
+			if candidates[j].dist < minDist {
+				minDist = candidates[j].dist
+				bestIdx = j
+			}
+		}
+		result = append(result, candidates[bestIdx].e)
+		// Remove selected
+		candidates[bestIdx] = candidates[len(candidates)-1]
+		candidates = candidates[:len(candidates)-1]
+	}
+
 	return result
 }
 
@@ -1058,11 +1121,35 @@ func (g *Game) drawGame(screen *ebiten.Image) {
 	for _, e := range g.enemies {
 		sx, sy := e.X-g.cameraX, e.Y-g.cameraY
 		if sx >= -50 && sx <= screenWidth+50 && sy >= -50 && sy <= screenHeight+50 {
-			c := e.Color
-			if e.HitFlash > 0 {
-				c = color.RGBA{R: 255, G: 255, B: 255, A: 255}
+			// Render monster image or fallback circle
+			if img := g.monsterImages[e.Type]; img != nil {
+				bounds := img.Bounds()
+				// Scale to fit radius * 2
+				scale := (e.Radius * 2.5) / float64(bounds.Dx())
+
+				op := &ebiten.DrawImageOptions{}
+				op.GeoM.Scale(scale, scale)
+				op.GeoM.Translate(sx-float64(bounds.Dx())*scale/2, sy-float64(bounds.Dy())*scale/2)
+
+				// Tinting
+				if e.HitFlash > 0 {
+					op.ColorM.Scale(10, 10, 10, 1)
+				} else {
+					// Apply monster color tint
+					r := float64(e.Color.R) / 255.0
+					g := float64(e.Color.G) / 255.0
+					b := float64(e.Color.B) / 255.0
+					op.ColorM.Scale(r, g, b, 1)
+				}
+
+				screen.DrawImage(img, op)
+			} else {
+				c := e.Color
+				if e.HitFlash > 0 {
+					c = color.RGBA{R: 255, G: 255, B: 255, A: 255}
+				}
+				vector.DrawFilledCircle(screen, float32(sx), float32(sy), float32(e.Radius), c, false)
 			}
-			vector.DrawFilledCircle(screen, float32(sx), float32(sy), float32(e.Radius), c, false)
 
 			// Boss indicator
 			if e.IsBoss {
@@ -1088,8 +1175,20 @@ func (g *Game) drawGame(screen *ebiten.Image) {
 	// Player
 	px, py := g.player.X-g.cameraX, g.player.Y-g.cameraY
 	pColor := Characters[g.player.CharType].Color
-	vector.DrawFilledCircle(screen, float32(px), float32(py), 20, pColor, false)
-	vector.StrokeCircle(screen, float32(px), float32(py), 20, 3, color.RGBA{R: 255, G: 255, B: 255, A: 200}, false)
+
+	// Draw character image or fallback
+	if img := g.charImages[g.player.CharType]; img != nil {
+		op := &ebiten.DrawImageOptions{}
+		// Scale to fit ~40px width
+		bounds := img.Bounds()
+		scale := 50.0 / float64(bounds.Dx())
+		op.GeoM.Scale(scale, scale)
+		op.GeoM.Translate(px-float64(bounds.Dx())*scale/2, py-float64(bounds.Dy())*scale/2)
+		screen.DrawImage(img, op)
+	} else {
+		vector.DrawFilledCircle(screen, float32(px), float32(py), 20, pColor, false)
+		vector.StrokeCircle(screen, float32(px), float32(py), 20, 3, color.RGBA{R: 255, G: 255, B: 255, A: 200}, false)
+	}
 
 	// Damage numbers
 	for _, d := range g.damageNumbers {
@@ -1136,9 +1235,18 @@ func (g *Game) drawHUD(screen *ebiten.Image) {
 	for i, w := range g.player.Weapons {
 		x := 10 + i*55
 		y := screenHeight - 55
-		def := WeaponDefs[w.Type]
-		vector.DrawFilledRect(screen, float32(x), float32(y), 50, 50, def.Color, false)
-		vector.StrokeRect(screen, float32(x), float32(y), 50, 50, 2, color.RGBA{R: 255, G: 255, B: 255, A: 150}, false)
+
+		if img, ok := g.weaponImages[w.Type]; ok {
+			op := &ebiten.DrawImageOptions{}
+			scale := 50.0 / 64.0
+			op.GeoM.Scale(scale, scale)
+			op.GeoM.Translate(float64(x), float64(y))
+			screen.DrawImage(img, op)
+		} else {
+			def := WeaponDefs[w.Type]
+			vector.DrawFilledRect(screen, float32(x), float32(y), 50, 50, def.Color, false)
+			vector.StrokeRect(screen, float32(x), float32(y), 50, 50, 2, color.RGBA{R: 255, G: 255, B: 255, A: 150}, false)
+		}
 		ebitenutil.DebugPrintAt(screen, formatInt(w.Level), x+38, y+35)
 	}
 
@@ -1164,16 +1272,32 @@ func (g *Game) drawLevelUp(screen *ebiten.Image) {
 		optColor := color.RGBA{R: 50, G: 55, B: 70, A: 255}
 		vector.DrawFilledRect(screen, boxX+20, float32(y)-5, boxW-40, 55, optColor, false)
 
-		// Number
-		ebitenutil.DebugPrintAt(screen, "["+formatInt(i+1)+"]", int(boxX)+30, y+15)
+		// Icon
+		var icon *ebiten.Image
+		if opt.IsWeapon {
+			icon = g.weaponImages[opt.WeaponType]
+		} else {
+			icon = g.passiveImages[opt.PassiveType]
+		}
+
+		if icon != nil {
+			op := &ebiten.DrawImageOptions{}
+			scale := 45.0 / 64.0
+			op.GeoM.Scale(scale, scale)
+			op.GeoM.Translate(float64(boxX)+25, float64(y))
+			screen.DrawImage(icon, op)
+		}
+
+		// Number (far right)
+		ebitenutil.DebugPrintAt(screen, "["+formatInt(i+1)+"]", int(boxX+boxW)-40, y+20)
 
 		// Name and level
 		lvlText := ""
 		if opt.CurrentLvl > 0 {
 			lvlText = " (Lv " + formatInt(opt.CurrentLvl+1) + ")"
 		}
-		ebitenutil.DebugPrintAt(screen, opt.Name+lvlText, int(boxX)+70, y+5)
-		ebitenutil.DebugPrintAt(screen, opt.Desc, int(boxX)+70, y+25)
+		ebitenutil.DebugPrintAt(screen, opt.Name+lvlText, int(boxX)+80, y+5)
+		ebitenutil.DebugPrintAt(screen, opt.Desc, int(boxX)+80, y+25)
 	}
 }
 
@@ -1239,6 +1363,106 @@ func formatTime(t float64) string {
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 	return screenWidth, screenHeight
+}
+
+func (g *Game) generateIcons() {
+	g.weaponImages = make(map[WeaponType]*ebiten.Image)
+	g.passiveImages = make(map[PassiveType]*ebiten.Image)
+
+	size := 64
+
+	// Weapons
+	for t, def := range WeaponDefs {
+		img := ebiten.NewImage(size, size)
+
+		// Background
+		vector.DrawFilledRect(img, 0, 0, float32(size), float32(size), color.RGBA{R: 30, G: 30, B: 40, A: 255}, false)
+		vector.StrokeRect(img, 0, 0, float32(size), float32(size), 2, def.Color, false)
+
+		cx, cy := float32(size)/2, float32(size)/2
+		c := def.Color
+
+		switch t {
+		case WeaponSword:
+			vector.StrokeLine(img, cx-15, cy+15, cx+15, cy-15, 6, c, false)                           // Blade
+			vector.StrokeLine(img, cx-10, cy+10, cx-5, cy+5, 10, color.RGBA{100, 50, 20, 255}, false) // Hilt
+		case WeaponOrb:
+			vector.DrawFilledCircle(img, cx, cy, 15, c, false)
+			vector.StrokeCircle(img, cx, cy, 20, 2, color.White, false)
+		case WeaponArrow:
+			vector.StrokeLine(img, cx-15, cy, cx+15, cy, 4, c, false)
+			vector.StrokeLine(img, cx+5, cy-10, cx+15, cy, 4, c, false)
+			vector.StrokeLine(img, cx+5, cy+10, cx+15, cy, 4, c, false)
+		case WeaponLeech:
+			vector.DrawFilledCircle(img, cx, cy+5, 12, c, false)
+			vector.DrawFilledCircle(img, cx, cy-8, 8, c, false) // Drop shape approx
+		case WeaponFireRing:
+			vector.StrokeCircle(img, cx, cy, 18, 5, c, false)
+			vector.StrokeCircle(img, cx, cy, 12, 3, color.RGBA{255, 200, 50, 255}, false)
+		case WeaponLightning:
+			vector.StrokeLine(img, cx-10, cy-20, cx+5, cy, 4, c, false)
+			vector.StrokeLine(img, cx+5, cy, cx-5, cy+20, 4, c, false)
+		case WeaponCross:
+			vector.DrawFilledRect(img, cx-5, cy-20, 10, 40, c, false)
+			vector.DrawFilledRect(img, cx-15, cy-5, 30, 10, c, false)
+		case WeaponGarlic:
+			vector.DrawFilledCircle(img, cx, cy, 18, c, false)
+			vector.StrokeLine(img, cx, cy-18, cx, cy-25, 3, color.RGBA{100, 200, 100, 255}, false)
+		}
+
+		g.weaponImages[t] = img
+	}
+
+	// Passives (generic icons)
+	for t := range PassiveDefs {
+		img := ebiten.NewImage(size, size)
+
+		// Background
+		vector.DrawFilledRect(img, 0, 0, float32(size), float32(size), color.RGBA{R: 20, G: 30, B: 30, A: 255}, false)
+		vector.StrokeRect(img, 0, 0, float32(size), float32(size), 2, color.RGBA{100, 200, 200, 255}, false)
+
+		cx, cy := float32(size)/2, float32(size)/2
+
+		switch t {
+		case PassiveMight: // Sword
+			vector.StrokeLine(img, cx-10, cy+10, cx+10, cy-10, 5, color.RGBA{255, 50, 50, 255}, false)
+		case PassiveArmor: // Square
+			vector.DrawFilledRect(img, cx-12, cy-12, 24, 24, color.RGBA{150, 150, 150, 255}, false)
+		case PassiveSpeed: // Arrow
+			vector.StrokeLine(img, cx-15, cy, cx+15, cy, 4, color.RGBA{255, 255, 50, 255}, false)
+		case PassiveMagnet: // U
+			vector.StrokeLine(img, cx-10, cy-10, cx-10, cy+10, 4, color.RGBA{50, 50, 255, 255}, false)
+			vector.StrokeLine(img, cx+10, cy-10, cx+10, cy+10, 4, color.RGBA{255, 50, 50, 255}, false)
+			vector.StrokeLine(img, cx-10, cy+10, cx+10, cy+10, 4, color.White, false)
+		case PassiveRecovery: // Heart
+			vector.DrawFilledCircle(img, cx-6, cy-5, 8, color.RGBA{255, 100, 100, 255}, false)
+			vector.DrawFilledCircle(img, cx+6, cy-5, 8, color.RGBA{255, 100, 100, 255}, false)
+			vector.DrawFilledCircle(img, cx, cy+8, 8, color.RGBA{255, 100, 100, 255}, false)
+		case PassiveLuck: // Green circle
+			vector.DrawFilledCircle(img, cx, cy, 15, color.RGBA{50, 200, 50, 255}, false)
+		case PassiveGrowth: // Tree/Star
+			vector.StrokeLine(img, cx, cy-15, cx, cy+15, 4, color.RGBA{50, 255, 50, 255}, false)
+			vector.StrokeLine(img, cx-15, cy, cx+15, cy, 4, color.RGBA{50, 255, 50, 255}, false)
+		case PassiveCooldown: // Clock
+			vector.StrokeCircle(img, cx, cy, 15, 2, color.RGBA{100, 100, 255, 255}, false)
+			vector.StrokeLine(img, cx, cy, cx, cy-10, 2, color.White, false)
+			vector.StrokeLine(img, cx, cy, cx+8, cy, 2, color.White, false)
+		case PassiveArea: // Empty square
+			vector.StrokeRect(img, cx-15, cy-15, 30, 30, 3, color.RGBA{200, 50, 200, 255}, false)
+		case PassiveDuration: // Hourglass (X)
+			vector.StrokeLine(img, cx-10, cy-15, cx+10, cy+15, 4, color.RGBA{200, 200, 50, 255}, false)
+			vector.StrokeLine(img, cx+10, cy-15, cx-10, cy+15, 4, color.RGBA{200, 200, 50, 255}, false)
+		case PassiveAmount: // Dots
+			vector.DrawFilledCircle(img, cx-8, cy, 5, color.White, false)
+			vector.DrawFilledCircle(img, cx+8, cy, 5, color.White, false)
+		case PassiveRevival: // Ankh
+			vector.StrokeLine(img, cx, cy-5, cx, cy+15, 4, color.RGBA{255, 200, 50, 255}, false)
+			vector.StrokeLine(img, cx-10, cy+5, cx+10, cy+5, 4, color.RGBA{255, 200, 50, 255}, false)
+			vector.StrokeCircle(img, cx, cy-10, 6, 3, color.RGBA{255, 200, 50, 255}, false)
+		}
+
+		g.passiveImages[t] = img
+	}
 }
 
 func main() {
