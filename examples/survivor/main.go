@@ -5,6 +5,7 @@ import (
 	"embed"
 	"image"
 	"image/color"
+	"image/draw"
 	_ "image/jpeg"
 	_ "image/png"
 	"log"
@@ -363,6 +364,7 @@ func NewGame() *Game {
 			log.Printf("Warning: could not decode %s: %v", char.ImageFile, err)
 			continue
 		}
+		img = removeBackground(img)
 		g.charImages[i] = ebiten.NewImageFromImage(img)
 	}
 
@@ -381,6 +383,7 @@ func NewGame() *Game {
 			log.Printf("Warning: could not decode %s: %v", def.ImageFile, err)
 			continue
 		}
+		img = removeBackground(img)
 		g.monsterImages[t] = ebiten.NewImageFromImage(img)
 	}
 
@@ -1725,6 +1728,35 @@ func (g *Game) newDamageNumber() *DamageNumber {
 
 func (g *Game) freeDamageNumber(d *DamageNumber) {
 	g.unusedDmg = append(g.unusedDmg, d)
+}
+
+func removeBackground(src image.Image) image.Image {
+	bounds := src.Bounds()
+	dst := image.NewRGBA(bounds)
+	draw.Draw(dst, bounds, src, bounds.Min, draw.Src)
+
+	bg := src.At(bounds.Min.X, bounds.Min.Y)
+	br, bg_g, bb, _ := bg.RGBA()
+
+	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
+		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			c := dst.At(x, y)
+			r, g, b, _ := c.RGBA()
+
+			d := abs(int(r)-int(br)) + abs(int(g)-int(bg_g)) + abs(int(b)-int(bb))
+			if d < 3000 { // Small threshold for compression artifacts
+				dst.Set(x, y, color.Transparent)
+			}
+		}
+	}
+	return dst
+}
+
+func abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
 }
 
 func main() {
