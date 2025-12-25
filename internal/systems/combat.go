@@ -4,7 +4,7 @@ import (
 	"math/rand"
 
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // AttackEvent represents an attack action.

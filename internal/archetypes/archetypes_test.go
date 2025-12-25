@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 func TestArchetype2(t *testing.T) {

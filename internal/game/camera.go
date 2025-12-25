@@ -5,7 +5,7 @@ import (
 	"math/rand"
 
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // Camera represents a 2D camera with follow, zoom, and shake.

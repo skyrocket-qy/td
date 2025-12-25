@@ -3,7 +3,7 @@ package systems
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // RenderSystem draws all entities with Position and Sprite components.

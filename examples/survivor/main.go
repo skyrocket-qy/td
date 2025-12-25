@@ -15,7 +15,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
-	"td/internal/graphics"
+	"github.com/skyrocket-qy/NeuralWay/internal/graphics"
 )
 
 //go:embed assets/*.png

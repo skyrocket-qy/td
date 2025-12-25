@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // CompactExporter exports world state in minimal-token format for LLMs.

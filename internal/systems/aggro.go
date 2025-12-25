@@ -5,7 +5,7 @@ import (
 	"sort"
 
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // Aggro component for entities with threat tables.

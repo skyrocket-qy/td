@@ -2,7 +2,7 @@ package ai
 
 import (
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // Action represents a game action that can be executed by an AI agent.

@@ -1,7 +1,7 @@
 package systems
 
 import (
-	"td/internal/assets"
+	"github.com/skyrocket-qy/NeuralWay/internal/assets"
 )
 
 // AudioSystem wraps the AudioManager for ECS-style usage.

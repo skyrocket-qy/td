@@ -269,7 +269,7 @@ func loadSprite(filename string) *ebiten.Image {
 
 ```go
 import (
-    "td/internal/components"
+    "github.com/skyrocket-qy/NeuralWay/internal/components"
     "github.com/mlange-42/ark/ecs"
 )
 

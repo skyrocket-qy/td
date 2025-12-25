@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
-	"td/internal/engine"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/engine"
 )
 
 func TestStateExporterExportWorld(t *testing.T) {

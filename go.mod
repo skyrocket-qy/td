@@ -1,4 +1,6 @@
-module td
+module github.com/skyrocket-qy/NeuralWay
+
+replace github.com/skyrocket-qy/NeuralWay => .
 
 go 1.25.5
 
@@ -6,6 +8,7 @@ require (
 	github.com/gorilla/websocket v1.5.3
 	github.com/hajimehoshi/ebiten/v2 v2.9.6
 	github.com/mlange-42/ark v0.6.4
+	golang.org/x/text v0.29.0
 )
 
 require (
@@ -22,5 +25,4 @@ require (
 	golang.org/x/image v0.31.0 // indirect
 	golang.org/x/sync v0.17.0 // indirect
 	golang.org/x/sys v0.36.0 // indirect
-	golang.org/x/text v0.29.0 // indirect
 )

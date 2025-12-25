@@ -2,7 +2,7 @@ package systems
 
 import (
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // MovementSystem updates entity positions based on velocity.

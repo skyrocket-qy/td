@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"td/internal/ai"
+	"github.com/skyrocket-qy/NeuralWay/internal/ai"
 )
 
 // TestQASession runs automated QA testing on the Survivor game.

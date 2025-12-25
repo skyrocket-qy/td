@@ -1,6 +1,6 @@
 package components
 
-import "td/internal/assets"
+import "github.com/skyrocket-qy/NeuralWay/internal/assets"
 
 // Tilemap wraps a TiledMap asset for ECS entities.
 // Allows tilemap-based backgrounds and levels to be rendered as entities.

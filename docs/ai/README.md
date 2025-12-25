@@ -32,9 +32,9 @@ RAG-ready documentation for LLM agents integrating with this game framework.
 
 ```go
 import (
-    "td/internal/ai"
-    "td/internal/engine"
-    "td/internal/components"
+    "github.com/skyrocket-qy/NeuralWay/internal/ai"
+    "github.com/skyrocket-qy/NeuralWay/internal/engine"
+    "github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // 1. Create headless game (no GPU)

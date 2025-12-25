@@ -1,7 +1,7 @@
 package systems
 
 import (
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // StatusSystem manages status effect updates.

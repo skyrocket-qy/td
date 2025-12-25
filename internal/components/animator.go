@@ -2,7 +2,7 @@ package components
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"td/internal/assets"
+	"github.com/skyrocket-qy/NeuralWay/internal/assets"
 )
 
 // Animator is a component that controls sprite animation.

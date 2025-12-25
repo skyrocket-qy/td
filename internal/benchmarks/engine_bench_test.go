@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
-	"td/internal/systems"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/systems"
 )
 
 // BenchmarkECSUpdate benchmarks a simple system update with many entities.

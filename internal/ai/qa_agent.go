@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/engine"
+	"github.com/skyrocket-qy/NeuralWay/internal/engine"
 )
 
 // QAEntry represents a single step in the QA log.

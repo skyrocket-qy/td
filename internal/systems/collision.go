@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // SpatialHash provides fast spatial queries using a grid-based hash.

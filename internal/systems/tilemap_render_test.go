@@ -5,8 +5,8 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/assets"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/assets"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 func TestTilemapRenderSystemSetCamera(t *testing.T) {

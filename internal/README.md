@@ -20,9 +20,9 @@ Import only the packages you need:
 
 ```go
 import (
-    "td/internal/engine"
-    "td/internal/components"
-    "td/internal/systems"
+    "github.com/skyrocket-qy/NeuralWay/internal/engine"
+    "github.com/skyrocket-qy/NeuralWay/internal/components"
+    "github.com/skyrocket-qy/NeuralWay/internal/systems"
 )
 
 func main() {

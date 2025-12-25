@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // WorldSnapshot represents a serializable snapshot of the world state.

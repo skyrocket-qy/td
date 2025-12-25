@@ -9,10 +9,10 @@
 
 ```bash
 # 1. Build WASM (from project root)
-cd /Users/zelin/project/td/examples/underneath && ./build_wasm.sh
+cd /Users/zelin/project/github.com/skyrocket-qy/NeuralWay/examples/underneath && ./build_wasm.sh
 
 # 2. Start web server
-cd /Users/zelin/project/td/examples/underneath/web && python3 -m http.server 8080
+cd /Users/zelin/project/github.com/skyrocket-qy/NeuralWay/examples/underneath/web && python3 -m http.server 8080
 
 # 3. Open browser and test
 # Navigate to http://localhost:8080

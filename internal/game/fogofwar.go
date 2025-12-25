@@ -2,7 +2,7 @@ package game
 
 import (
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
 )
 
 // FogState represents visibility state of a cell.

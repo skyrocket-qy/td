@@ -6,9 +6,9 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/mlange-42/ark/ecs"
-	"td/internal/components"
-	"td/internal/engine"
-	"td/internal/systems"
+	"github.com/skyrocket-qy/NeuralWay/internal/components"
+	"github.com/skyrocket-qy/NeuralWay/internal/engine"
+	"github.com/skyrocket-qy/NeuralWay/internal/systems"
 )
 
 // GameState represents the current game state.
