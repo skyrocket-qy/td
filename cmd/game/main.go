@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/skyrocket-qy/NeuralWay/internal/game"
+	"github.com/skyrocket-qy/NeuralWay/engine/game"
 )
 
 const (

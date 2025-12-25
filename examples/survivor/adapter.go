@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/skyrocket-qy/NeuralWay/internal/ai"
+	"github.com/skyrocket-qy/NeuralWay/engine/ai"
 )
 
 // SurvivorAdapter implements ai.GameAdapter for automated QA testing.

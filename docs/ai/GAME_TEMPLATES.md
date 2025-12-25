@@ -96,7 +96,7 @@ func main() {
 ```go
 package main
 
-import "github.com/skyrocket-qy/NeuralWay/internal/ai"
+import "github.com/skyrocket-qy/NeuralWay/engine/ai"
 
 type MyGameAdapter struct {
     game *Game
@@ -169,7 +169,7 @@ package main
 import (
     "testing"
     "time"
-    "github.com/skyrocket-qy/NeuralWay/internal/ai"
+    "github.com/skyrocket-qy/NeuralWay/engine/ai"
 )
 
 func TestQASession(t *testing.T) {

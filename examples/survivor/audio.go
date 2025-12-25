@@ -6,7 +6,7 @@ import (
 	"math"
 	"math/rand"
 
-	"github.com/skyrocket-qy/NeuralWay/internal/assets"
+	"github.com/skyrocket-qy/NeuralWay/engine/assets"
 )
 
 const (
